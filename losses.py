@@ -23,10 +23,10 @@ class GramMatrix(nn.Module):
 
 class StyleLoss(nn.Module):
     # Register target gram matrix for reuse
-    def __init__(self, target_gram, eps=1e-8):
+    def __init__(self, target_gram):
         super().__init__()
-        self.register_buffer('target_gram', target_gram)
+        self.register_buffer('target', target_gram)
 
     # Forward pass- Gram Matrix distance
     def forward(self, input):
-        return nn.MSELoss()(GramMatrix()(input), self.target_gram)
+        return nn.MSELoss()(GramMatrix()(input), self.target)
