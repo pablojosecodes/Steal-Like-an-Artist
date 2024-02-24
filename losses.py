@@ -1,13 +1,35 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+# class ContentLoss(nn.Module):
+#     def __init__(self, target):
+#         super().__init__()
+#         self.register_buffer('target', target)
+
+#     def forward(self, input):
+#         return F.mse_loss(input, self.target, reduction='sum')
+    
+# Trying new- with normalization
+import torch.nn.functional as F
+import torch.nn as nn
+
 class ContentLoss(nn.Module):
     def __init__(self, target):
         super().__init__()
         self.register_buffer('target', target)
 
     def forward(self, input):
-        return F.mse_loss(input, self.target, reduction='sum')
+        # Get the number of feature maps (channels) and the dimensions of each map
+        N = input.size(1)  # Number of feature maps
+        M = input.size(2) * input.size(3)  # Height times width of the feature map
+        
+        # Calculate the content loss
+        loss = F.mse_loss(input,self.target, reduction='sum')
+        # Normalize the loss by the number of elements in the feature maps
+        normalized_loss = loss / (2 * N * M)
+        return normalized_loss
+
+    
     
 # 4d Tensor -> Gram Matrix
 # class GramMatrix(nn.Module):
@@ -55,7 +77,7 @@ class StyleLoss(nn.Module):
         self.loss = nn.functional.mse_loss(G, self.target, reduction='sum')
         N = input.size(0)
         M = input.size(1) * input.size(2)  # Height times width of the feature map.
-        self.loss /= (4 * (N ** 2) * (M ** 2))
+        self.loss /= (4 * N * M)
         return self.loss
     
     
