@@ -1,6 +1,6 @@
 
 
-This project implements a minimalistic version of Neural Style Transfer (NST) using PyTorch
+This repo implements a minimalistic version of Neural Style Transfer (NST) using PyTorch
 
 
 ## Sample Outputs
